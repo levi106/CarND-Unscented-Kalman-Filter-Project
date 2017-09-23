@@ -275,13 +275,11 @@ void UKF::PredictMeanAndCovariance() {
   // predicted state mean
   x_ = Xsig_pred_ * weights_;
 
-  std::cout << Xsig_pred_ << std::endl;
   // predicted state covariance matrix
   P_.fill(0.0);
   for (int i = 0; i < 2 * n_aug_ + 1; i++) {
     // state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
-    std::cout << x_diff << std::endl;
     // angle normalization
     while (x_diff(3) > M_PI) x_diff(3) -= 2. * M_PI;
     while (x_diff(3) < -M_PI) x_diff(3) += 2. * M_PI;
