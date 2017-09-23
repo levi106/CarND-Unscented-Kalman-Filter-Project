@@ -3,6 +3,7 @@
 #include "json.hpp"
 #include <math.h>
 #include "ukf.h"
+#include "logger.h"
 #include "tools.h"
 
 using namespace std;
@@ -38,7 +39,10 @@ int main()
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
 
-  h.onMessage([&ukf,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  Logger logger;
+  logger.Init();
+
+  h.onMessage([&ukf,&tools,&estimations,&ground_truth,&logger](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -127,7 +131,8 @@ int main()
     	  
     	  estimations.push_back(estimate);
 
-    	  VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
+        VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
+        logger.Log(meas_package, estimate, gt_values, RMSE);
 
           json msgJson;
           msgJson["estimate_x"] = p_x;
@@ -137,7 +142,7 @@ int main()
           msgJson["rmse_vx"] = RMSE(2);
           msgJson["rmse_vy"] = RMSE(3);
           auto msg = "42[\"estimate_marker\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          // std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  
         }
