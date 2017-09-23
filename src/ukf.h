@@ -120,29 +120,47 @@ private:
   void SigmaPointPrediction(MatrixXd& Xsig_aug, double delta_t);
 
   /**
-   * Predicts 
+   * Predicts mean and covariance
    */
   void PredictMeanAndCovariance();
 
   /**
-   *
+   * Transform sigma points into Lidar measurement space
+   * @param Xsig_pred The predicted sigma points
+   * @param Zsig_out The predicted sigma points in measurement space
    */
   void TransformIntoLidarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out);
 
   /**
-   *
+   * Transform sigma points into Radar measurement space
+   * @param Xsig_pred The predicted sigma points
+   * @param Zsig_out The predicted sigma points in measurement space
    */
   void TransformIntoRadarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out);
 
+  /**
+   * Calculate mean predicted measurement and measurement covariance matrix
+   * @param Zsig_pred The predicted sigma points in measurement space
+   * @param z_out The mean predicted measurement
+   * @param S_out The measurement covariance matrix
+   */
   void PredictLidarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out);
     
   /**
-   *
+   * Calculate mean predicted measurement and measurement covariance matrix
+   * @param Zsig_pred The predicted sigma points in measurement space
+   * @param z_out The mean predicted measurement
+   * @param S_out The measurement covariance matrix
    */
   void PredictRadarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out);
 
    /**
-    * 
+    * Update state mean and covariance matrix
+    * @param Zsig_pred The predicted sigma points in measurement space
+    * @param z_pred The mean predicted measurement
+    * @param S The matrix for predicted measurement covariance
+    * @param z The incoming measurement
+    * @param n_z The dimension of incoming measurement
     */
   void UpdateState(MatrixXd& Zsig_pred, VectorXd& z_pred, MatrixXd& S, VectorXd& z, int n_z);
 };

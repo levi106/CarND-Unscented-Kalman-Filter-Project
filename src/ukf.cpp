@@ -268,6 +268,9 @@ void UKF::SigmaPointPrediction(MatrixXd& Xsig_aug, double delta_t) {
   }
 }
 
+/**
+* Predicts mean and covariance
+*/
 void UKF::PredictMeanAndCovariance() {
   // predicted state mean
   x_ = Xsig_pred_ * weights_;
@@ -287,6 +290,11 @@ void UKF::PredictMeanAndCovariance() {
   }
 }
 
+/**
+* Transform sigma points into Lidar measurement space
+* @param Xsig_pred The predicted sigma points
+* @param Zsig_out The predicted sigma points in measurement space
+*/
 void UKF::TransformIntoLidarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out) {
   MatrixXd Zsig{2, 2 * n_aug_ + 1};
 
@@ -299,6 +307,11 @@ void UKF::TransformIntoLidarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig
   *Zsig_out = Zsig;
 }
 
+/**
+* Transform sigma points into Radar measurement space
+* @param Xsig_pred The predicted sigma points
+* @param Zsig_out The predicted sigma points in measurement space
+*/
 void UKF::TransformIntoRadarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out) {
   MatrixXd Zsig{3, 2 * n_aug_ + 1};
 
@@ -321,6 +334,12 @@ void UKF::TransformIntoRadarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig
   *Zsig_out = Zsig;
 }
 
+/**
+* Calculate mean predicted measurement and measurement covariance matrix
+* @param Zsig_pred The predicted sigma points in measurement space
+* @param z_out The mean predicted measurement
+* @param S_out The measurement covariance matrix
+*/
 void UKF::PredictLidarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out) {
   // mean predicted measurement
   VectorXd z_pred{2};
@@ -350,6 +369,12 @@ void UKF::PredictLidarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd
   *S_out = S;
 }
 
+/**
+* Calculate mean predicted measurement and measurement covariance matrix
+* @param Zsig_pred The predicted sigma points in measurement space
+* @param z_out The mean predicted measurement
+* @param S_out The measurement covariance matrix
+*/
 void UKF::PredictRadarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out) {
   // mean predicted measurement
   VectorXd z_pred{3};
@@ -384,6 +409,14 @@ void UKF::PredictRadarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd
   *S_out = S;
 }
 
+/**
+* Update state mean and covariance matrix
+* @param Zsig_pred The predicted sigma points in measurement space
+* @param z_pred The mean predicted measurement
+* @param S The matrix for predicted measurement covariance
+* @param z The incoming measurement
+* @param n_z The dimension of incoming measurement
+*/
 void UKF::UpdateState(MatrixXd& Zsig_pred, VectorXd& z_pred, MatrixXd& S, VectorXd& z, int n_z) {
   // set measurement dimen
   MatrixXd Tc{n_x_, n_z};
