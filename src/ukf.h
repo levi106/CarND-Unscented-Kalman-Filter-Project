@@ -70,6 +70,18 @@ public:
   ///* Previous timestamp
   long long previous_timestamp_;
 
+  ///* Measurement matrix
+  MatrixXd H_;
+
+  ///* Transpose matrix of measurement matrix
+  MatrixXd Ht_;
+
+  ///* Measurement covariance matrix
+  MatrixXd R_;
+
+  ///* Identity matrix
+  MatrixXd I_;
+
   /**
    * Constructor
    */
@@ -125,26 +137,11 @@ private:
   void PredictMeanAndCovariance();
 
   /**
-   * Transform sigma points into Lidar measurement space
-   * @param Xsig_pred The predicted sigma points
-   * @param Zsig_out The predicted sigma points in measurement space
-   */
-  void TransformIntoLidarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out);
-
-  /**
    * Transform sigma points into Radar measurement space
    * @param Xsig_pred The predicted sigma points
    * @param Zsig_out The predicted sigma points in measurement space
    */
-  void TransformIntoRadarMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out);
-
-  /**
-   * Calculate mean predicted measurement and measurement covariance matrix
-   * @param Zsig_pred The predicted sigma points in measurement space
-   * @param z_out The mean predicted measurement
-   * @param S_out The measurement covariance matrix
-   */
-  void PredictLidarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out);
+  void TransformIntoMeasurementSpace(MatrixXd& Xsig_pred, MatrixXd* Zsig_out);
     
   /**
    * Calculate mean predicted measurement and measurement covariance matrix
@@ -152,7 +149,7 @@ private:
    * @param z_out The mean predicted measurement
    * @param S_out The measurement covariance matrix
    */
-  void PredictRadarMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out);
+  void PredictMeasurement(MatrixXd& Zsig_pred, VectorXd* z_out, MatrixXd* S_out);
 
    /**
     * Update state mean and covariance matrix
@@ -160,9 +157,8 @@ private:
     * @param z_pred The mean predicted measurement
     * @param S The matrix for predicted measurement covariance
     * @param z The incoming measurement
-    * @param n_z The dimension of incoming measurement
     */
-  void UpdateState(MatrixXd& Zsig_pred, VectorXd& z_pred, MatrixXd& S, VectorXd& z, int n_z);
+  void UpdateState(MatrixXd& Zsig_pred, VectorXd& z_pred, MatrixXd& S, VectorXd& z);
 };
 
 #endif /* UKF_H */
